@@ -1,6 +1,15 @@
 ---
 # tasks file for users
 
+- name: "common | set os specific variables"
+  include_vars: "{{ item }}"
+  with_first_found:
+   - "os-{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml"
+   - "os-{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+   - "os-{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+   - "os-{{ ansible_distribution }}.yml"
+   - "os-default.yml"
+
 - name: user group creation
   action: group 
     name="{{ item.username }}"
@@ -13,15 +22,26 @@
     user
     name={{ item.username }}
     group={{ item.username }}
-    groups="{{ item.groups|join(',') if item.groups is defined else users_available[item.username]['groups']|join(',') }}"
-    shell="{{ item.shell if item.shell is defined else users_available[item.username]['shell'] }}"
+    groups="{{ item.groups|default(users_available[item.username]['groups']|join(',')) }}"
+    shell="{{ item.shell|default(users_available[item.username]['shell']) }}"
     comment="{{ users_available[item.username]['name'] }}"
-    uid="{{ item.uid if item.uid is defined else users_available[item.username]['uid'] }}"
+    uid="{{ item.uid|default(users_available[item.username]['uid']) }}"
     createhome=yes
-    password="{{ item.password if item.password is defined else users_available[item.username]['password'] }}"
+    password="{{ item.password|default(users_available[item.username]['password']) }}"
     update_password=on_create
   with_items: users
   tags: users
+
+- name: is user admin
+  action:
+    user
+    name={{ item.username }}
+    groups="{{ users_admin_groups|join(',') }}"
+    append=yes
+  when: "{{ item.is_admin|default(users_available[item.username]['is_admin']) }}"
+  with_items: users
+  tags: users
+
 
 - name: creating .ssh directory
   action: file path=~{{ item.username }}/.ssh owner={{ item.username }} group={{ item.username }} state=directory mode=0750
