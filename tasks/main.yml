@@ -34,13 +34,13 @@
   tags: users
 
 - name: user removal
-  user: name="{{ item.username }}" state=absent
-  with_items: users_deleted
-  tags: users
+  action: user name="{{ item.key }}" state=absent
+  with_dict: "{{ users_available }}"
+  when: "item.key not in {{ users|map(attribute='username')|list }}"
+  tags: [users, del]
 
 - name: group removal
-  user: name="{{ item.username }}" state=absent
-  with_items: users_deleted
-  tags: users
-
-
+  action: group name="{{ item.key }}" state=absent
+  with_dict: "{{ users_available }}"
+  when: "item.key not in {{ users|map(attribute='username')|list }}"
+  tags: [users, del]
