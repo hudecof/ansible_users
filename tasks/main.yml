@@ -22,12 +22,12 @@
     user
     name={{ item.username }}
     group={{ item.username }}
-    groups="{{ item.groups|default(users_available[item.username]['groups']|join(',')) }}"
-    shell="{{ item.shell|default(users_available[item.username]['shell']) }}"
+    groups="{{ item.groups|default(users_available[item.username]['groups']|join(','))|default(omit) }}"
+    shell="{{ item.shell|default(users_available[item.username]['shell'])|default(omit) }}"
     comment="{{ users_available[item.username]['name'] }}"
     uid="{{ item.uid|default(users_available[item.username]['uid']) }}"
     createhome=yes
-    password="{{ item.password|default(users_available[item.username]['password']) }}"
+    password="{{ item.password|default(users_available[item.username]['password'])|default(omit) }}"
     update_password=on_create
   with_items: users
   tags: users
