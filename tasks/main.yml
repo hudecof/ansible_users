@@ -13,12 +13,12 @@
     user
     name={{ item.username }}
     group={{ item.username }}
-    groups="{{ item.groups|join(',') if item.groups is defined else users_available[item.username]['groups']|join(',') }}"
-    shell="{{ item.shell if item.shell is defined else users_available[item.username]['shell'] }}"
+    groups="{{ item.groups|join(',') if item.groups is defined else users_available[item.username]['groups']|join(',') | default(omit) }}"
+    shell="{{ item.shell if item.shell is defined else users_available[item.username]['shell'] | default("/bin/bash") }}"
     comment="{{ users_available[item.username]['name'] }}"
     uid="{{ item.uid if item.uid is defined else users_available[item.username]['uid'] }}"
     createhome=yes
-    password="{{ item.password if item.password is defined else users_available[item.username]['password'] }}"
+    password="{{ item.password if item.password is defined else users_available[item.username]['password'] | default(omit) }}"
     update_password=on_create
   with_items: users
   tags: users
