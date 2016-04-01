@@ -9,6 +9,7 @@
    - "os-{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
    - "os-{{ ansible_distribution }}.yml"
    - "os-default.yml"
+  tags: users
 
 - name: user group creation
   action: group 
@@ -38,7 +39,7 @@
     name={{ item.username }}
     groups="{{ users_admin_groups|join(',') }}"
     append=yes
-  when: "item.is_admin is defined or users_available[item.username]['is_admin'] is defined"
+  when: "item.is_admin|default(users_available[item.username]['is_admin'])|default(False)"
   with_items: '{{ users }}'
   tags: users
 
