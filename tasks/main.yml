@@ -29,7 +29,7 @@
     uid="{{ item.uid|default(users_available[item.username]['uid']) }}"
     createhome=yes
     password="{{ item.password|default(users_available[item.username]['password'])|default(omit) }}"
-    update_password=on_create
+    update_password={{ users_update_password }}
   with_items: '{{ users }}'
   tags: users
 
