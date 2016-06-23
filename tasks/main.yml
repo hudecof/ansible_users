@@ -29,7 +29,7 @@
     uid="{{ item.uid|default(users_available[item.username]['uid']) }}"
     createhome=yes
     password="{{ item.password|default(users_available[item.username]['password'])|default(omit) }}"
-    update_password=on_create
+    update_password={{ users_update_password }}
   with_items: '{{ users }}'
   tags: users
 
@@ -47,12 +47,12 @@
 - name: creating .ssh directory
   action: file path=~{{ item.username }}/.ssh owner={{ item.username }} group={{ item.username }} state=directory mode=0750
   with_items: '{{ users }}'
-  tags: users
+  tags: [users,sshkey]
 
 - name: uploading ssh keys
   action: copy src={{ users_dir_ssh_keys}}/{{ item.username }}.pub dest=~{{ item.username }}/.ssh/authorized_keys owner={{ item.username }} group={{ item.username }} mode=0640
   with_items: '{{ users }}'
-  tags: users
+  tags: [users,sshkey]
 
 - name: user removal
   action: user name="{{ item.key }}" state=absent
