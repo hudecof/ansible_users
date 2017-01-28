@@ -9,7 +9,7 @@ Role Variables
 
 There are 3 main variables `users_available`, `users` and `users_deleted`.
 
-`users_avaiable` is list of all users as dictonary, where the key is the user name. Each user couldl have several attributes. I have this variable in `vars/users.yml` and is included in the playbook in `vars` section.
+`users_avaiable` is list of all users as dictonary, where the key is the user name. Each user could have several attributes. I have this variable in `vars/users.yml` and is included in the playbook in `vars` section.
 Attributes are
 
 - name: aka GECOS
