@@ -53,6 +53,7 @@
 
 - name: uploading ssh keys
   action: copy src={{ users_dir_ssh_keys}}/{{ item.username }}.pub dest=~{{ item.username }}/.ssh/authorized_keys owner={{ item.username }} group={{ item.username }} mode=0640
+  when: users_upload_ssh_keys
   with_items: '{{ users }}'
   tags: [users,sshkey]
 
