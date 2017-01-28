@@ -15,7 +15,7 @@
 - name: user group creation
   action: group 
     name="{{ item.username }}"
-    gid="{{ item.uid if item.uid is defined else users_available[item.username]['uid']}}"
+    gid="{{ item.uid if item.uid is defined else users_available[item.username]['uid'] if users_available[item.username]['uid'] is defined else omit }}"
   with_items: '{{ users }}'
   when: users_create_user_group
   tags: users
@@ -28,7 +28,7 @@
     groups="{{ item.groups|join(',') if item.groups is defined else users_available[item.username]['groups']|join(',') if users_available[item.username]['groups'] is defined else omit }}"
     shell="{{ item.shell|default(users_available[item.username]['shell'])|default(omit) }}"
     comment="{{ users_available[item.username]['name'] }}"
-    uid="{{ item.uid|default(users_available[item.username]['uid']) }}"
+    uid="{{ item.uid|default(users_available[item.username]['uid']) if users_available[item.username]['uid'] is defined else omit }}"
     createhome=yes
     password="{{ item.password|default(users_available[item.username]['password'])|default(omit) }}"
     update_password={{ users_update_password }}
