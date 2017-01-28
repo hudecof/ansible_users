@@ -27,7 +27,7 @@
     group={{ item.group if item.group is defined else users_available[item.username]['group'] if users_available[item.username]['group'] is defined else item.username }}
     groups="{{ item.groups|join(',') if item.groups is defined else users_available[item.username]['groups']|join(',') if users_available[item.username]['groups'] is defined else omit }}"
     shell="{{ item.shell|default(users_available[item.username]['shell'])|default(omit) }}"
-    comment="{{ users_available[item.username]['name'] }}"
+    comment="{{ item.comment if item.comment is defined else users_available[item.username]['comment'] if users_available[item.username]['comment'] is defined else users_available[item.username]['name'] }}"
     uid="{{ item.uid|default(users_available[item.username]['uid']) if users_available[item.username]['uid'] is defined else omit }}"
     createhome=yes
     password="{{ item.password|default(users_available[item.username]['password'])|default(omit) }}"
