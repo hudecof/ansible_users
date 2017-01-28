@@ -17,6 +17,7 @@
     name="{{ item.username }}"
     gid="{{ item.uid if item.uid is defined else users_available[item.username]['uid']}}"
   with_items: '{{ users }}'
+  when: users_create_user_group
   tags: users
 
 - name: user creation

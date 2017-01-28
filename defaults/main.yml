@@ -12,3 +12,4 @@ users_deleted: []
 users_dir_ssh_keys: .
 
 users_update_password: on_create
+users_create_user_group: yes
