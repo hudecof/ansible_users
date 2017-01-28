@@ -60,7 +60,7 @@ The `username` is a key of the `users_available` dictionary.
 Notes
 --------------
 
-This role always creates usergroup with the same name as the username and puts its as the primary one.
+This role by default creates usergroup with the same name as the username and puts its as the primary one.
 
 This role always creates `home` based on defaults of the target system.
 
