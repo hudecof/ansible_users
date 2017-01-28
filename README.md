@@ -1,6 +1,8 @@
 Users
 ========
 
+[![Build Status](https://travis-ci.org/kostyrevaa/ansible_users.svg?branch=master)](https://travis-ci.org/kostyrevaa/ansible_users)
+
 This is simple user and user groups managment. It suits my needs but pathches are welcome.
 It's based on the role https://github.com/mivok/ansible-users
 
