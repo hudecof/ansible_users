@@ -1,6 +1,8 @@
 Users
 ========
 
+[![Build Status](https://travis-ci.org/kostyrevaa/ansible_users.svg?branch=master)](https://travis-ci.org/kostyrevaa/ansible_users)
+
 This is simple user and user groups managment. It suits my needs but pathches are welcome.
 It's based on the role https://github.com/mivok/ansible-users
 
@@ -9,7 +11,7 @@ Role Variables
 
 There are 3 main variables `users_available`, `users` and `users_deleted`.
 
-`users_avaiable` is list of all users as dictonary, where the key is the user name. Each user couldl have several attributes. I have this variable in `vars/users.yml` and is included in the playbook in `vars` section.
+`users_avaiable` is list of all users as dictonary, where the key is the user name. Each user could have several attributes. I have this variable in `vars/users.yml` and is included in the playbook in `vars` section.
 Attributes are
 
 - name: aka GECOS
@@ -60,7 +62,7 @@ The `username` is a key of the `users_available` dictionary.
 Notes
 --------------
 
-This role always creates usergroup with the same name as the username and puts its as the primary one.
+This role by default creates usergroup with the same name as the username and puts its as the primary one.
 
 This role always creates `home` based on defaults of the target system.
 

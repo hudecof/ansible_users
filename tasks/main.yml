@@ -15,19 +15,20 @@
 - name: user group creation
   action: group 
     name="{{ item.username }}"
-    gid="{{ item.uid if item.uid is defined else users_available[item.username]['uid']}}"
+    gid="{{ item.uid if item.uid is defined else users_available[item.username]['uid'] if users_available[item.username]['uid'] is defined else omit }}"
   with_items: '{{ users }}'
+  when: users_create_user_group
   tags: users
 
 - name: user creation
   action: 
     user
     name={{ item.username }}
-    group={{ item.username }}
+    group={{ item.group if item.group is defined else users_available[item.username]['group'] if users_available[item.username]['group'] is defined else item.username }}
     groups="{{ item.groups|join(',') if item.groups is defined else users_available[item.username]['groups']|join(',') if users_available[item.username]['groups'] is defined else omit }}"
     shell="{{ item.shell|default(users_available[item.username]['shell'])|default(omit) }}"
-    comment="{{ users_available[item.username]['name'] }}"
-    uid="{{ item.uid|default(users_available[item.username]['uid']) }}"
+    comment="{{ item.comment if item.comment is defined else users_available[item.username]['comment'] if users_available[item.username]['comment'] is defined else users_available[item.username]['name'] }}"
+    uid="{{ item.uid|default(users_available[item.username]['uid']) if users_available[item.username]['uid'] is defined else omit }}"
     createhome=yes
     password="{{ item.password|default(users_available[item.username]['password'])|default(omit) }}"
     update_password={{ users_update_password }}
@@ -46,12 +47,13 @@
 
 
 - name: creating .ssh directory
-  action: file path=~{{ item.username }}/.ssh owner={{ item.username }} group={{ item.username }} state=directory mode=0750
+  action: file path=~{{ item.username }}/.ssh owner={{ item.username }} group={{ item.group if item.group is defined else users_available[item.username]['group'] if users_available[item.username]['group'] is defined else item.username }} state=directory mode=0750
   with_items: '{{ users }}'
   tags: [users,sshkey]
 
 - name: uploading ssh keys
-  action: copy src={{ users_dir_ssh_keys}}/{{ item.username }}.pub dest=~{{ item.username }}/.ssh/authorized_keys owner={{ item.username }} group={{ item.username }} mode=0640
+  action: copy src={{ users_dir_ssh_keys}}/{{ item.username }}.pub dest=~{{ item.username }}/.ssh/authorized_keys owner={{ item.username }} group={{ item.group if item.group is defined else users_available[item.username]['group'] if users_available[item.username]['group'] is defined else item.username }} mode=0640
+  when: users_upload_ssh_keys
   with_items: '{{ users }}'
   tags: [users,sshkey]
 

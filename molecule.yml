@@ -1,0 +1,27 @@
+---
+molecule:
+  test:
+    sequence:
+      - destroy
+      - syntax
+      - create
+      - converge
+      - idempotence
+
+driver:
+  name: docker
+
+docker:
+  containers:
+
+    - name: ubuntu-users
+      image: ubuntu
+      image_version: latest
+
+    - name: fedora-users
+      image: fedora
+      image_version: latest
+      command: /bin/bash
+
+verifier:
+  name: testinfra
