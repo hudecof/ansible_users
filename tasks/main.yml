@@ -11,20 +11,16 @@
 
 - name: create
   include:
-    user_create.yml user={{ user_item }}
+    user_create.yml user={{ item }}
   with_items: '{{ users }}'
-  loop_control:
-    loop_var: user_item
   tags:
     - users
     - users:create
 
 - name: ssh keys
   include:
-    user_sshkey.yml user={{ user_item }}
+    user_sshkey.yml user={{ item }}
   with_items: '{{ users }}'
-  loop_control:
-    loop_var: user_item
   when: users_upload_ssh_keys
   tags:
     - users
@@ -32,10 +28,8 @@
 
 - name: delete
   include:
-    user_delete.yml user={{ user_item }}
+    user_delete.yml user={{ item }}
   with_items: '{{ users_deleted }}'
-  loop_control:
-    loop_var: user_item
   tags:
     - users
     - users:delete
