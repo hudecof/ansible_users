@@ -4,7 +4,7 @@ galaxy_info:
   description: manageing users and the user groups
   company: CNC, a.s.
   license: BSD
-  min_ansible_version: 2.1
+  min_ansible_version: 2.0
 
   platforms:
   - name: EL
