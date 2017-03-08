@@ -1,7 +1,8 @@
 ---
 - hosts: all
+  gather_facts: yes
   roles:
-    - role: hudecof.users
+    - role: users
       users_upload_ssh_keys: no
       users_available:
         kyxap:
@@ -12,13 +13,15 @@
         - username: kyxap
 
 - hosts: all
+  gather_facts: yes
+
   pre_tasks:
     - name: create group opsworks
       group:
         name: opsworks
         state: present
   roles:
-    - role: hudecof.users
+    - role: users
       users_create_user_group: no
       users_upload_ssh_keys: no
       users_available:

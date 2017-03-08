@@ -1,6 +1,4 @@
 ---
-# tasks file for users
-
 - name: "common | set os specific variables"
   include_vars: "{{ item }}"
   with_first_found:
@@ -8,63 +6,36 @@
    - "os-{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
    - "os-{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
    - "os-{{ ansible_distribution }}.yml"
-   - "os-{{ ansible_os_family }}.yml"
    - "os-default.yml"
   tags: users
 
-- name: user group creation
-  action: group 
-    name="{{ item.username }}"
-    gid="{{ item.uid if item.uid is defined else users_available[item.username]['uid'] if users_available[item.username]['uid'] is defined else omit }}"
+- name: create
+  include:
+    user_create.yml user={{ user_item }}
   with_items: '{{ users }}'
-  when: users_create_user_group
-  tags: users
+  loop_control:
+    loop_var: user_item
+  tags:
+    - users
+    - users:create
 
-- name: user creation
-  action: 
-    user
-    name={{ item.username }}
-    group={{ item.group if item.group is defined else users_available[item.username]['group'] if users_available[item.username]['group'] is defined else item.username }}
-    groups="{{ item.groups|join(',') if item.groups is defined else users_available[item.username]['groups']|join(',') if users_available[item.username]['groups'] is defined else omit }}"
-    shell="{{ item.shell|default(users_available[item.username]['shell'])|default("/bin/bash") }}"
-    comment="{{ item.comment if item.comment is defined else users_available[item.username]['comment'] if users_available[item.username]['comment'] is defined else users_available[item.username]['name'] }}"
-    uid="{{ item.uid|default(users_available[item.username]['uid']) if users_available[item.username]['uid'] is defined else omit }}"
-    createhome=yes
-    password="{{ item.password|default(users_available[item.username]['password'])|default(omit) }}"
-    update_password={{ users_update_password }}
+- name: ssh keys
+  include:
+    user_sshkey.yml user={{ user_item }}
   with_items: '{{ users }}'
-  tags: users
-
-- name: is user admin
-  action:
-    user
-    name={{ item.username }}
-    groups="{{ users_admin_groups|join(',') }}"
-    append=yes
-  when: "item.is_admin|default(users_available[item.username]['is_admin'])|default(False)"
-  with_items: '{{ users }}'
-  tags: users
-
-
-- name: creating .ssh directory
-  action: file path=~{{ item.username }}/.ssh owner={{ item.username }} group={{ item.group if item.group is defined else users_available[item.username]['group'] if users_available[item.username]['group'] is defined else item.username }} state=directory mode=0750
-  with_items: '{{ users }}'
-  tags: [users,sshkey]
-
-- name: uploading ssh keys
-  action: copy src={{ users_dir_ssh_keys}}/{{ item.username }}.pub dest=~{{ item.username }}/.ssh/authorized_keys owner={{ item.username }} group={{ item.group if item.group is defined else users_available[item.username]['group'] if users_available[item.username]['group'] is defined else item.username }} mode=0640
+  loop_control:
+    loop_var: user_item
   when: users_upload_ssh_keys
-  with_items: '{{ users }}'
-  tags: [users,sshkey]
+  tags:
+    - users
+    - users:sshkey
 
-- name: user removal
-  action: user name="{{ item.key }}" state=absent
-  with_dict: "{{ users_available }}"
-  when: "item.key not in users|map(attribute='username')|list"
-  tags: [users, del]
-
-- name: group removal
-  action: group name="{{ item.key }}" state=absent
-  with_dict: "{{ users_available }}"
-  when: "item.key not in users|map(attribute='username')|list"
-  tags: [users, del]
+- name: delete
+  include:
+    user_delete.yml user={{ user_item }}
+  with_items: '{{ users_deleted }}'
+  loop_control:
+    loop_var: user_item
+  tags:
+    - users
+    - users:delete

@@ -1,17 +1,15 @@
-Users
-========
+# Users
 
 [![Build Status](https://travis-ci.org/hudecof/ansible_users.svg?branch=master)](https://travis-ci.org/hudecof/ansible_users)
 
 This is simple user and user groups managment. It suits my needs but pathches are welcome.
-It's based on the role https://github.com/mivok/ansible-users
 
-Role Variables
+# Role Variables
 --------------
 
 There are 3 main variables `users_available`, `users` and `users_deleted`.
 
-`users_avaiable` is list of all users as dictonary, where the key is the user name. Each user could have several attributes. I have this variable in `vars/users.yml` and is included in the playbook in `vars` section.
+`users_avaiable` is list of all users as dictionary, where the key is the user name. Each user could have several attributes. I have this variable in `vars/users.yml` and is included in the playbook in `vars` section.
 Attributes are
 
 - name: aka GECOS
