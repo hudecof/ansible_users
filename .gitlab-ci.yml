@@ -1,0 +1,14 @@
+image: hudecof/ansible-tests:latest
+
+before_script:
+ - pip install -U setuptools
+ - pip install wheel
+ - pip install ansible==2.2.1.0
+ - pip install docker-py
+ - pip install molecule
+
+test:
+  script:
+    - cd ../ && rm -rf hudecof.users && mv role-users hudecof.users && cd hudecof.users
+    - molecule test
+    - cd ../ && mv  hudecof.users role-users && cd role-users
