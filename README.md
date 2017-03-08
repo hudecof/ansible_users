@@ -1,6 +1,6 @@
 # Users
 
-- cnc:
+- cnc: [![build status](https://source.cnc.sk/ansible/role-users/badges/master/build.svg)](https://source.cnc.sk/ansible/role-users/commits/master)
 - github: [![Build Status](https://travis-ci.org/hudecof/ansible_users.svg?branch=master)](https://travis-ci.org/hudecof/ansible_users)
 
 This is simple user and user groups managment. It suits my needs but pathches are welcome.
