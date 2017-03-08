@@ -1,0 +1,16 @@
+---
+- name: user delete
+  user:
+    name: "{{ user.username }}"
+    state: absent
+  tags:
+    - users
+    - users:delete
+
+- name: group delete
+  group:
+    name: "{{ user.username }}"
+    state: absent
+  tags:
+    - users
+    - users:delete

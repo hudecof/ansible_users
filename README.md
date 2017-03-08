@@ -1,57 +1,66 @@
-Users
-========
+# Users
 
-[![Build Status](https://travis-ci.org/hudecof/ansible_users.svg?branch=master)](https://travis-ci.org/hudecof/ansible_users)
+- cnc:
+- github: [![Build Status](https://travis-ci.org/hudecof/ansible_users.svg?branch=master)](https://travis-ci.org/hudecof/ansible_users)
 
 This is simple user and user groups managment. It suits my needs but pathches are welcome.
-It's based on the role https://github.com/mivok/ansible-users
 
-Role Variables
+# Role Variables
 --------------
 
 There are 3 main variables `users_available`, `users` and `users_deleted`.
 
-`users_avaiable` is list of all users as dictonary, where the key is the user name. Each user could have several attributes. I have this variable in `vars/users.yml` and is included in the playbook in `vars` section.
-Attributes are
+## List of users
 
-- name: aka GECOS
-- password: password hash
-- shell: path to the shell
-- uid: user id. It's good to keep the id same accross the systems
-- groups: list of the supplementary groups
+`users_avaiable` is list of all users as dictionary, where the key is the user name. Each user could have several attributes. I have this variable in `vars/users.yml` and is included in the playbook in `vars` section. See variable preferencein tablel beelowto find out their requirements and default values.
 
-Exampe:
+- `name`: full name of the user
+- `password`: password hash
+- `shell`: path to the shell
+- `uid`: user id. It's good to keep the id same accross the systems
+- `group`: primary group for user, if not exists is created with the same **gid** as is user account
+- `groups`: list of the supplementary groups
+- `is_admin`: boolean, this ads user to **sudo**/**wheel** group based on the OS
+- `comment`: is the comment field in passwd file, if not used **name** is default
 
-    users_available:
-      user1:
-        name: Name1
-        password: <password hash>
-        shell: /bin/bash
-        uid: 2000
-        groups: ['users']
-      user2:
-        name: Name2
-        password: password hash
-        shell: /bin/bash
-        uid: 2001
-        groups: ['users']
+```
+users_available:
+  user1:
+    name: Name1
+    password: <password hash>
+    shell: /bin/bash
+    uid: 2000
+    groups: ['users']
+  user2:
+    name: Name2
+    password: <password hash>
+    shell: /bin/bash
+    uid: 2001
+    groups: ['users', 'devops']
+```
+
+## Users to create
 
 `users` is the list of the users. In this list you could override some values from `users_available`.
 
-- groups
-- shell
-- uid
-- password
+- `groups`
+- `group`
+- `shell`
+- `uid`
+- `password`
 
-Example:
-
-    users:
-      - username: user1
-        groups: ['users', 'sudo']
-      - username: user2
-        uid: 20100
+```
+users:
+  - username: user1
+    groups: ['users', 'sudo']
+  - username: user2
+    uid: 20100
+    is_admin: True
+```
 
 The `username` is a key of the `users_available` dictionary.
+
+## Users to delete
 
 `users_deleted` is list of all users to be deleted
 
@@ -59,23 +68,41 @@ The `username` is a key of the `users_available` dictionary.
       - username: user1
       - username: userX
 
-Notes
---------------
+## Users SSH keys
 
-This role by default creates usergroup with the same name as the username and puts its as the primary one.
+`users_upload_ssh_keys` is boolean, default **True**. When **False** the uploading of the users **ssh keys** is skipped.
 
-This role always creates `home` based on defaults of the target system.
+`users_dir_ssh_keys`tell, whereto fund the users ssh keys. It should be absilute path, in my environment it's **{{ playbook_dir }}/files/users**.
 
-This role `copy` the `ssh authorized_keys`. Put the file in `files/{{ item.username }}.pub`. I decided to use `copy` while the keys deprovisioning is much more easier. If the user do not have ssh key, create empty file.
+Task will look for `users_dir_ssh_keys/<username>.pub` file.
+
+## Other variables
+`users_update_password` value is one of supported by the ansible module **user**, default is **on_create**.
+
+`users_create_user_group` is boolean, default **True**. When **False** the user group creation task is skipped.
+
+`users_default_shell` is default user shellwhen not specified, default is **/bin/bash**.
+
+## Variable precendce
+
+|   |  users_available | users | required  | default  |
+|---|---|---|---|---|
+| uid | yes | yes | yes | n/a |
+| name | yes  | no | yes | n/a |
+| password | yes | yes | no  | omit |
+| shell | yes | yes | no  | see `users_default_shell` |
+| uid | yes | yes | no  | omit |
+| password | yes | yes | no  | omit |
+| group | yes | yes | no | `username` |
+| groups | yes | yes | no | omit |
+| is_admin | yes | yes | no | n/a |
 
 
-Dependencies
-------------
+# Dependencies
 
 None
 
-License
--------
+# License
 
 BSD
 
@@ -83,3 +110,5 @@ Author Information
 ------------------
 
 Peter Hudec
+CNC, a.s.
+Slovakia

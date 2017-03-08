@@ -1,0 +1,15 @@
+---
+- name: authorized keys
+  authorized_key:
+    user: "{{ user.username }}"
+    state: present
+    manage_dir: True
+    key: "{{ key_item }}"
+    exclusive: yes
+  with_file:
+    - "{{ users_dir_ssh_keys}}/{{ user.username }}.pub"
+  loop_control:
+    loop_var: key_item
+  tags:
+    - users
+    - users:sshkey

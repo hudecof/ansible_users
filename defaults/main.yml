@@ -12,5 +12,6 @@ users_deleted: []
 users_dir_ssh_keys: .
 
 users_update_password: on_create
-users_create_user_group: yes
-users_upload_ssh_keys: yes
+users_create_user_group: True
+users_upload_ssh_keys: True
+users_default_shell: /bin/bash

@@ -1,27 +1,20 @@
 ---
-molecule:
-  test:
-    sequence:
-      - destroy
-      - syntax
-      - create
-      - converge
-      - idempotence
-
+dependency:
+  name: galaxy
 driver:
   name: docker
 
 docker:
   containers:
-
-    - name: ubuntu-users
+    - name: ubuntu-16.04
       image: ubuntu
-      image_version: latest
-
-    - name: fedora-users
-      image: fedora
-      image_version: latest
-      command: /bin/bash
+      image_version: 16.04
+    - name: centos-7
+      image: centos
+      image_version: 7
+    - name: debian-8
+      image: debian
+      image_version: 8
 
 verifier:
   name: testinfra
