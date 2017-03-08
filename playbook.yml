@@ -2,7 +2,7 @@
 - hosts: all
   gather_facts: yes
   roles:
-    - role: users
+    - role: hudecof.users
       users_upload_ssh_keys: no
       users_available:
         kyxap:
@@ -21,7 +21,7 @@
         name: opsworks
         state: present
   roles:
-    - role: users
+    - role: hudecof.users
       users_create_user_group: no
       users_upload_ssh_keys: no
       users_available:
