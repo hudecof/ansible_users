@@ -11,5 +11,5 @@
   loop_control:
     loop_var: key_item
   tags:
-    - users
-    - users:sshkey
+    - "users"
+    - "users:sshkey"

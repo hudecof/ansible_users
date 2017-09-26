@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: Converge
+  hosts: all
   gather_facts: yes
   roles:
     - role: hudecof.users
