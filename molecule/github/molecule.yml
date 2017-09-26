@@ -29,7 +29,7 @@ provisioner:
   lint:
     name: ansible-lint
 scenario:
-  name: default
+  name: github
 verifier:
   name: testinfra
   lint:
