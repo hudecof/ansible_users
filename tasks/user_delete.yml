@@ -11,6 +11,3 @@
   group:
     name: "{{ user.username }}"
     state: absent
-  tags:
-    - users
-    - users:delete

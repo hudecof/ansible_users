@@ -8,9 +8,6 @@
     name: "{{ user.username }}"
     gid: "{{ user.uid if user.uid is defined else user_data.uid if user_data.uid is defined else omit }}"
   when: users_create_user_group
-  tags:
-    - users
-    - users:create
 
 - name: set user group fact 1
   set_fact:
@@ -42,6 +39,3 @@
     groups: "{{ users_admin_groups|join(',') }}"
     append: yes
   when: user.is_admin|default(user_data.is_admin)|default(False)
-  tags:
-    - users
-    - users:create

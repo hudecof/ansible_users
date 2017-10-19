@@ -10,6 +10,3 @@
     - "{{ users_dir_ssh_keys}}/{{ user.username }}.pub"
   loop_control:
     loop_var: key_item
-  tags:
-    - "users"
-    - "users:sshkey"
