@@ -15,3 +15,6 @@ users_update_password: on_create
 users_create_user_group: True
 users_upload_ssh_keys: True
 users_default_shell: /bin/bash
+
+# settings from the vars/os-{{ distribution }}.yml
+users_admin_groups: "{{ __users_admin_groups }}"
