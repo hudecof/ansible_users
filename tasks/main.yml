@@ -16,6 +16,15 @@
     - users
     - users:create
 
+- name: create key directory
+  file:
+    path: "{{ users_ssh_key_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: users_ssh_key_path is not none
+
 - name: ssh keys
   include:
     user_sshkey.yml user={{ user_item }}

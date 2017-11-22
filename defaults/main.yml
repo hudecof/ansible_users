@@ -18,3 +18,5 @@ users_default_shell: /bin/bash
 
 # settings from the vars/os-{{ distribution }}.yml
 users_admin_groups: "{{ __users_admin_groups }}"
+
+users_ssh_key_path: null

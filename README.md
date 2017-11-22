@@ -72,9 +72,11 @@ The `username` is a key of the `users_available` dictionary.
 
 `users_upload_ssh_keys` is boolean, default **True**. When **False** the uploading of the users **ssh keys** is skipped.
 
-`users_dir_ssh_keys`tell, whereto fund the users ssh keys. It should be absilute path, in my environment it's **{{ playbook_dir }}/files/users**.
+`users_dir_ssh_keys`tell, where to fund the users ssh keys. It should be absilute path, in my environment it's **{{ playbook_dir }}/files/users**.
 
-Task will look for `users_dir_ssh_keys/<username>.pub` file.
+Task will look for `{{ users_dir_ssh_keys }}/<username>.pub` file.
+
+`users_ssh_key_path` is used, when you want to place the authorized keys not in home directory. The keys will be in `{{ users_ssh_key_path}}/<username>.pub`. You need to modify also **sshd_config** variable **AuthorizedKeysFile** to `{{ users_ssh_key_path }}/%u.pub`
 
 ## Other variables
 `users_update_password` value is one of supported by the ansible module **user**, default is **on_create**.
