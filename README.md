@@ -1,16 +1,14 @@
 # Users
 
-- cnc: [![build status](https://source.cnc.sk/ansible/role-users/badges/master/build.svg)](https://source.cnc.sk/ansible/role-users/commits/master)
 - github: [![Build Status](https://travis-ci.org/hudecof/ansible_users.svg?branch=master)](https://travis-ci.org/hudecof/ansible_users)
 
 This is simple user and user groups managment. It suits my needs but pathches are welcome.
 
-# Role Variables
---------------
+## Role Variables
 
 There are 3 main variables `users_available`, `users` and `users_deleted`.
 
-## List of users
+### List of users
 
 `users_avaiable` is list of all users as dictionary, where the key is the user name. Each user could have several attributes. I have this variable in `vars/users.yml` and is included in the playbook in `vars` section. See variable preferencein tablel beelowto find out their requirements and default values.
 
@@ -39,7 +37,7 @@ users_available:
     groups: ['users', 'devops']
 ```
 
-## Users to create
+### Users to create
 
 `users` is the list of the users. In this list you could override some values from `users_available`.
 
@@ -60,7 +58,7 @@ users:
 
 The `username` is a key of the `users_available` dictionary.
 
-## Users to delete
+### Users to delete
 
 `users_deleted` is list of all users to be deleted
 
@@ -68,7 +66,7 @@ The `username` is a key of the `users_available` dictionary.
       - username: user1
       - username: userX
 
-## Users SSH keys
+### Users SSH keys
 
 `users_upload_ssh_keys` is boolean, default **True**. When **False** the uploading of the users **ssh keys** is skipped.
 
@@ -78,14 +76,14 @@ Task will look for `{{ users_dir_ssh_keys }}/<username>.pub` file.
 
 `users_ssh_key_path` is used, when you want to place the authorized keys not in home directory. The keys will be in `{{ users_ssh_key_path}}/<username>.pub`. You need to modify also **sshd_config** variable **AuthorizedKeysFile** to `{{ users_ssh_key_path }}/%u.pub`
 
-## Other variables
+### Other variables
 `users_update_password` value is one of supported by the ansible module **user**, default is **on_create**.
 
 `users_create_user_group` is boolean, default **True**. When **False** the user group creation task is skipped.
 
 `users_default_shell` is default user shellwhen not specified, default is **/bin/bash**.
 
-## Variable precendce
+### Variable precendce
 
 |   |  users_available | users | required  | default  |
 |---|---|---|---|---|
@@ -100,17 +98,14 @@ Task will look for `{{ users_dir_ssh_keys }}/<username>.pub` file.
 | is_admin | yes | yes | no | n/a |
 
 
-# Dependencies
+## Dependencies
 
 None
 
-# License
+## License
 
 BSD
 
-Author Information
-------------------
+## Author Information
 
 Peter Hudec
-CNC, a.s.
-Slovakia
