@@ -1,41 +1,56 @@
 ---
-- name: set user_data variable
-  set_fact:
-    user_data: "{{users_available[user.username]}}"
+- name: "Set user_data variable"
+  ansible.builtin.set_fact:
+    user_data: "{{ users_available[user.username] }}"
+  tags:
+    - users
+    - users:create
 
-- name: user group creation
-  group:
+- name: "User group creation"
+  ansible.builtin.group:
     name: "{{ user.username }}"
     gid: "{{ user.uid if user.uid is defined else user_data.uid if user_data.uid is defined else omit }}"
   when: users_create_user_group
+  tags:
+    - users
+    - users:create
 
-- name: set user group fact 1
-  set_fact:
-    user_groups: "{{ user.groups|default(user_data.groups)|default([]) }}"
+- name: "Set user group fact 1"
+  ansible.builtin.set_fact:
+    user_groups: "{{ user.groups | default(user_data.groups) | default([]) }}"
+  tags:
+    - users
+    - users:create
 
-- name: set user group fact 2
-  set_fact:
-    user_groups: "{{ user_groups|union(users_admin_groups) }}"
-  when: user.is_admin|default(user_data.is_admin)|default(False)
+- name: "Set user group fact 2"
+  ansible.builtin.set_fact:
+    user_groups: "{{ user_groups | union(users_admin_groups) }}"
+  when: user.is_admin | default(user_data.is_admin) | default(False)
+  tags:
+    - users
+    - users:create
 
-- name: user creation
-  user:
+- name: "User creation"
+  ansible.builtin.user:
     name: "{{ user.username }}"
-    group: "{{ user.group|default(user_data.group)|default(user.username) }}"
-    groups: "{{ user_groups|join(',') if user_groups|length else omit  }}"
-    shell: "{{ user.shell|default(user_data.shell)|default(users_default_shell) }}"
-    comment: "{{ user.comment|default(user_data.comment)|default(user_data.name)|default(omit) }}"
-    uid: "{{ user.uid|default(user_data.uid)|default(omit) }}"
-    createhome: yes
-    password: "{{ user.password|default(user_data.password)|default(omit) }}"
+    group: "{{ user.group | default(user_data.group) | default(user.username) }}"
+    groups: "{{ user_groups | join(',') if user_groups | length else omit }}"
+    shell: "{{ user.shell | default(user_data.shell) | default(users_default_shell) }}"
+    comment: "{{ user.comment | default(user_data.comment) | default(user_data.name) | default(omit) }}"
+    uid: "{{ user.uid | default(user_data.uid) | default(omit) }}"
+    createhome: true
+    password: "{{ user.password | default(user_data.password) | default(omit) }}"
     update_password: "{{ users_update_password }}"
   tags:
     - users
     - users:create
 
-- name: is user admin
-  user:
+- name: "Is user admin"
+  ansible.builtin.user:
     name: "{{ user.username }}"
-    groups: "{{ users_admin_groups|join(',') }}"
-    append: yes
+    groups: "{{ users_admin_groups | join(',') }}"
+    append: true
   when: user.is_admin|default(user_data.is_admin)|default(False)
+  tags:
+    - users
+    - users:create

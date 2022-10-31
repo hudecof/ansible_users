@@ -70,7 +70,7 @@ The `username` is a key of the `users_available` dictionary.
 
 `users_upload_ssh_keys` is boolean, default **True**. When **False** the uploading of the users **ssh keys** is skipped.
 
-`users_dir_ssh_keys`tell, where to fund the users ssh keys. It should be absilute path, in my environment it's **{{ playbook_dir }}/files/users**.
+`users_dir_ssh_keys`tell, where to found the users ssh keys. It should be absilute path, in my environment it's **{{ playbook_dir }}/files/users**.
 
 Task will look for `{{ users_dir_ssh_keys }}/<username>.pub` file.
 

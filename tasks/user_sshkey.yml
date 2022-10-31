@@ -1,22 +1,28 @@
 ---
-- name: authorized keys (custom path)
-  copy:
+- name: "Authorized keys (custom path)"
+  ansible.builtin.copy:
     src: "{{ users_dir_ssh_keys }}/{{ user.username }}.pub"
     dest: "{{ users_ssh_key_path }}"
     owner: root
     group: root
     mode: 0644
   when: users_ssh_key_path is not none
+  tags:
+    - users
+    - users:sshkey
 
-- name: authorized keys (home dir)
-  authorized_key:
+- name: "Authorized keys (home dir)"
+  ansible.posix.authorized_key:
     user: "{{ user.username }}"
     state: present
-    manage_dir: True
+    manage_dir: true
     key: "{{ key_item }}"
-    exclusive: yes
+    exclusive: true
   with_file:
     - "{{ users_dir_ssh_keys }}/{{ user.username }}.pub"
   loop_control:
     loop_var: key_item
   when: users_ssh_key_path is none
+  tags:
+    - users
+    - users:sshkey

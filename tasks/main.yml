@@ -1,47 +1,59 @@
 ---
-- name: "common | set os specific variables"
-  include_vars: "{{ item }}"
+- name: "Set os specific variables"
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
-    - "os-{{ ansible_os_family }}.yml"
+    - "os-{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml"
+    - "os-{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+    - "os-{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+    - "os-{{ ansible_distribution }}.yml"
     - "os-default.yml"
   tags: users
 
-- name: create
-  include:
-    user_create.yml user={{ user_item }}
-  with_items: '{{ users }}'
+- name: "Create users"
+  ansible.builtin.include_tasks:
+    user_create.yml
+  vars:
+    user: "{{ user_item }}"
+  loop: '{{ users }}'
   loop_control:
     loop_var: user_item
   tags:
     - users
     - users:create
+  when: users_is_supported
 
-- name: create key directory
-  file:
+- name: "Create key directory"
+  ansible.builtin.file:
     path: "{{ users_ssh_key_path }}"
     state: directory
     owner: root
     group: root
     mode: 0755
-  when: users_ssh_key_path is not none
+  when: users_is_supported and users_ssh_key_path is not none
 
-- name: ssh keys
-  include:
-    user_sshkey.yml user={{ user_item }}
-  with_items: '{{ users }}'
+- name: "Upload ssh keys"
+  ansible.builtin.include_tasks:
+    user_sshkey.yml
+  vars:
+    user: "{{ user_item }}"
+  loop: '{{ users }}'
   when: users_upload_ssh_keys
   loop_control:
     loop_var: user_item
   tags:
     - users
     - users:sshkey
+  when: users_is_supported
 
-- name: delete
-  include:
-    user_delete.yml user={{ user_item }}
-  with_items: '{{ users_deleted }}'
+- name: "Delete users"
+  ansible.builtin.include_tasks:
+    user_delete.yml
+  vars:
+    user: "{{ user_item }}"
+  loop: '{{ users_deleted }}'
   loop_control:
     loop_var: user_item
   tags:
     - users
     - users:delete
+  when: users_is_supported
