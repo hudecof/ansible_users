@@ -1,3 +1,3 @@
 ---
-
+users_is_supported: true
 __users_admin_groups: ['sudo']
