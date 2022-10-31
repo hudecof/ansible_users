@@ -43,7 +43,6 @@
   tags:
     - users
     - users:sshkey
-  when: users_is_supported
 
 - name: "Delete users"
   ansible.builtin.include_tasks:
