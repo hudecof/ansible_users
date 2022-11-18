@@ -6,6 +6,7 @@
     - "os-{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
     - "os-{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
     - "os-{{ ansible_distribution }}.yml"
+    - "os-{{ ansible_os_family }}.yml"
     - "os-default.yml"
   tags: users
 
