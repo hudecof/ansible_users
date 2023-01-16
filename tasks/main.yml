@@ -8,20 +8,22 @@
     - "os-{{ ansible_distribution }}.yml"
     - "os-{{ ansible_os_family }}.yml"
     - "os-default.yml"
-  tags: users
+  tags: always
 
 - name: "Create users"
   ansible.builtin.include_tasks:
-    user_create.yml
+    file: user_create.yml
+    apply:
+      tags:
+        - users
+        - users:create
   vars:
     user: "{{ user_item }}"
   loop: '{{ users }}'
   loop_control:
     loop_var: user_item
-  tags:
-    - users
-    - users:create
   when: users_is_supported
+  tags: always
 
 - name: "Create key directory"
   ansible.builtin.file:
@@ -31,29 +33,36 @@
     group: root
     mode: 0755
   when: users_is_supported and users_ssh_key_path is not none
+  tags:
+    - users
+    - users:sshkey
 
 - name: "Upload ssh keys"
   ansible.builtin.include_tasks:
-    user_sshkey.yml
+    file: user_sshkey.yml
+    apply:
+      tags:
+      - users
+      - users:sshkey
   vars:
     user: "{{ user_item }}"
   loop: '{{ users }}'
   when: users_upload_ssh_keys
   loop_control:
     loop_var: user_item
-  tags:
-    - users
-    - users:sshkey
+  tags: always
 
 - name: "Delete users"
   ansible.builtin.include_tasks:
-    user_delete.yml
+    file: user_delete.yml
+    apply:
+      tags:
+      - users
+      - users:delete
   vars:
     user: "{{ user_item }}"
   loop: '{{ users_deleted }}'
   loop_control:
     loop_var: user_item
-  tags:
-    - users
-    - users:delete
   when: users_is_supported
+  tags: always

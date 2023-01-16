@@ -2,35 +2,23 @@
 - name: "Set user_data variable"
   ansible.builtin.set_fact:
     user_data: "{{ users_available[user.username] }}"
-  tags:
-    - users
-    - users:create
 
-- name: "User group creation"
+- name: "User group creation: {{ user.username }}"
   ansible.builtin.group:
     name: "{{ user.username }}"
     gid: "{{ user.uid if user.uid is defined else user_data.uid if user_data.uid is defined else omit }}"
   when: users_create_user_group
-  tags:
-    - users
-    - users:create
 
 - name: "Set user group fact 1"
   ansible.builtin.set_fact:
     user_groups: "{{ user.groups | default(user_data.groups) | default([]) }}"
-  tags:
-    - users
-    - users:create
 
 - name: "Set user group fact 2"
   ansible.builtin.set_fact:
     user_groups: "{{ user_groups | union(users_admin_groups) }}"
   when: user.is_admin | default(user_data.is_admin) | default(False)
-  tags:
-    - users
-    - users:create
 
-- name: "User creation"
+- name: "User creation: {{ user.username }}"
   ansible.builtin.user:
     name: "{{ user.username }}"
     group: "{{ user.group | default(user_data.group) | default(user.username) }}"
@@ -41,16 +29,10 @@
     createhome: true
     password: "{{ user.password | default(user_data.password) | default(omit) }}"
     update_password: "{{ users_update_password }}"
-  tags:
-    - users
-    - users:create
 
-- name: "Is user admin"
+- name: "Is user admin: {{ user.username }}"
   ansible.builtin.user:
     name: "{{ user.username }}"
     groups: "{{ users_admin_groups | join(',') }}"
     append: true
   when: user.is_admin|default(user_data.is_admin)|default(False)
-  tags:
-    - users
-    - users:create

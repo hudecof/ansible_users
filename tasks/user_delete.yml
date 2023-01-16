@@ -1,16 +1,10 @@
 ---
-- name: "User delete"
+- name: "User delete: {{ user.username }}"
   ansible.builtin.user:
     name: "{{ user.username }}"
     state: absent
-  tags:
-    - users
-    - users:delete
 
-- name: "Group delete"
+- name: "Group delete: {{ user.username }}"
   ansible.builtin.group:
     name: "{{ user.username }}"
     state: absent
-  tags:
-    - users
-    - users:delete
